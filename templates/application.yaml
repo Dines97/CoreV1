@@ -1,0 +1,24 @@
+{{- range .Values.applications }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ default .chart .name }}-@
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ default 0 .syncWave }}
+spec:
+  project: {{ $.Values.project.name }}
+  source:
+    chart: {{ .chart }}
+    repoURL: {{ .repoURL }}
+    targetRevision: {{ .targetRevision }}
+    helm:
+      values: |
+        {{- (.helm).values | nindent 8 }}
+  destination:
+    server: {{ $.Values.destination }}
+    namespace: {{ default .chart (.namespace).name }}
+      # syncPolicy:
+      #   automated:
+      #     prune: true
+      #     selfHeal: true
+{{- end }}

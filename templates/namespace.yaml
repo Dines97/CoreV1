@@ -1,0 +1,7 @@
+{{- range .Values.applications }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ default .chart (.namespace).name }}
+  labels: {{- (.namespace).labels | toYaml | nindent 4 }}
+{{- end }}
